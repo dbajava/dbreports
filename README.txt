@@ -1,5 +1,3 @@
-# dbreports
-Small dbreport tool
 DBREPORTS - README
 ----------------------
 Version Control
