@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<instance>
+		<iname>ptrb1</iname>
+		<fname>PTRB1 - Report</fname>
+		<port>1321</port>
+		<hostname>svora01a-scan</hostname>
+		<username>user03332</username>
+		<password>pxmFolz1lFyCv4mqTGcDMQ==</password>
+		<mailto>igorlf@gmail.com</mailto>
+		<mailhost>19.11.44.32</mailhost>
+		<report>
+			<title>N0N3</title>
+			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query>
+			<colnames>instance_name,host_name,version,startup_time,date</colnames>
+			<dayofweek>Tuesday,wednesday,thursday,friday</dayofweek>
+		</report>
+		<report>
+			<title>ETL Load</title>
+			<query>select distinct quant,vend,rowsnum,DATES  from BTR_CCA_TES.BRT_TRANS_LOG where DATES >sysdate-1 order by DATES</query>
+			<colnames>Quantity,Tecnum,Number of Rows processed,date</colnames>
+			<dayofweek>Tuesday,wednesday,thursday,friday</dayofweek>
+		</report>
+</instance>
