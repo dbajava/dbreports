@@ -34,6 +34,7 @@ java -Dpasswd=<newPassword> -jar dbreport.jar
 ----------------------
 XML configuration
 ----------------------
+Check the project DBReports-XMLDesigner. It's a graphical interface that can help you to create this XML file. Otherwise, just build your own xml following the instructions. 
 Dbreports works in one xml file per database instance. Every file holds only one database instace connection parameters and as many reports as it's needed.
 These are the necessary parameters for the database xml file:
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
