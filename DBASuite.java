@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 import javax.mail.Message;
@@ -96,7 +95,7 @@ public class DBASuite {
 				System.out.println("checking xml files...");
 			}
 			//control if a report is scheduled to send on the current day.
-			boolean toRun=false;
+			//	boolean toRun=false;
 			//If this pathname does not denote a directory, then listFiles() returns null. 
 			for (File file : files) {
 				//control if there is any report to be send on the current day.
@@ -128,21 +127,7 @@ public class DBASuite {
 						//running all reports
 						for (int i=0;i<instance.getReports().size();i++){
 							Report report = (Report) instance.getReports().get(i);
-							ArrayList<String> dayOfWeek =report.getDaysOfWeek();
-							String daysArray[] = {"sunday","monday","tuesday", "wednesday","thursday","friday", "saturday"};
-							Calendar calendar = Calendar.getInstance();
-							int day = calendar.get(Calendar.DAY_OF_WEEK)-1;
-							toRun=false;
-							for (int y=0;y<dayOfWeek.size();y++){
-								if(dayOfWeek.get(y).toLowerCase().equals("everyday")){
-									toRun=true;
-									toSend=true;
-								}else if(dayOfWeek.get(y).toLowerCase().equals(daysArray[day])){
-									toRun=true;
-									toSend=true;
-								}
-							}
-							if(toRun){
+							if(report.toRun()){
 								ArrayList<String> arrLis = report.getColname();
 								if (!argS){
 									System.out.println("Generating Report: "+report.getTitle());
@@ -160,6 +145,7 @@ public class DBASuite {
 								content=content+addResults(rs,report.getColname().size());
 								content=content+"</table></center></body></font></html>";
 							}
+							if(!toSend)toSend=report.toRun();
 						}
 						connection.close();
 						if(argC){
@@ -180,11 +166,10 @@ public class DBASuite {
 								fw.close();
 							}
 						}else{
-							if (!argS){
-								System.out.println("Sending email to:"+instance.getToMail());
-							}
-							//
 							if(toSend){
+								if (!argS){
+									System.out.println("Sending email to:"+instance.getToMail());
+								}
 								sendMail(content,instance);
 							}
 						}
@@ -284,6 +269,6 @@ public class DBASuite {
 		return new String(pbeCipher.doFinal(base64Decode(property)), "UTF-8");
 	}
 
-	
+
 
 }
