@@ -51,7 +51,6 @@ public class Report {
 	@XmlElement( name = "dayofmonth" )
 	public void setDayOfMonth(String dom) {
 		this.dayOfMonth = dom;
-		System.out.println(dom);
 	}
 	public String getrunHour() {
 		return runHour;

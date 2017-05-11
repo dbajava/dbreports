@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -131,7 +132,7 @@ public class DBASuite {
 								ArrayList<String> arrLis = report.getColname();
 								if (!argS){
 									System.out.println("Generating Report: "+report.getTitle());
-									System.out.println("Using the query:/n"+report.getQuery());
+									System.out.println("Using the query:\n"+report.getQuery());
 								}
 								if(!report.getTitle().equals("N0N3")){
 									content=content+"<hr><font size=\"2\" face=\"arial\" color=\"black\"><br><center><header><h3>"+report.getTitle()+"</h3></header><center>";
@@ -142,7 +143,7 @@ public class DBASuite {
 								}
 								content=content+" </tr>";
 								ResultSet rs = runQuery(report.getQuery(), stmt);
-								content=content+addResults(rs,report.getColname().size());
+								content=content+addResults(rs);
 								content=content+"</table></center></body></font></html>";
 							}
 							if(!toSend)toSend=report.toRun();
@@ -203,12 +204,20 @@ public class DBASuite {
 	/*
 	 * Used to add the query results into the report with HTML format
 	 */
-	private static String addResults(ResultSet rs,int numOfEle){
+	private static String addResults(ResultSet rs){
 		String content="";
 		content=content+"<tr>";
+		ResultSetMetaData rsmd;
+		int columnsNumber=0;
+		try {
+			rsmd = rs.getMetaData();
+			columnsNumber = rsmd.getColumnCount();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			while (rs.next()) {
-				for(int i=1;i<=numOfEle;i++){
+				for(int i=1;i<=columnsNumber;i++){
 					String tempVal=rs.getString(i);
 					content=content+"<td>"+tempVal+"</td>";
 				}
