@@ -2,6 +2,7 @@ package dbasuite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -12,8 +13,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement( name = "report" )
 public class Report {
 	private String title;
-	private String query;
-	private String rawColname;
+	private List<String> query;
+	private List<String> rawColname;
 	private String dayOfWeek;
 	private String dayOfMonth;
 	private String runHour;
@@ -24,18 +25,18 @@ public class Report {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getQuery() {
+	public List<String> getQuery() {
 		return query;
 	}
 	@XmlElement( name = "query" )
-	public void setQuery(String query) {
+	public void setQuery(List<String> query) {
 		this.query = query;
 	}
 	@XmlElement( name = "colnames")
-	public void setRawColname(String rawColname){
+	public void setRawColname(List<String> rawColname){
 		this.rawColname=rawColname;
 	}
-	public String getRawColname(){
+	public List<String> getRawColname(){
 		return rawColname;
 	}
 	public String getDayOfWeek() {
@@ -68,9 +69,9 @@ public class Report {
 		return arrLis;
 	}
 
-	public ArrayList<String> getColname(){
-		StringTokenizer strTkn = new StringTokenizer(this.rawColname, ",");
-		ArrayList<String> arrLis = new ArrayList<String>(this.rawColname.length());
+	public ArrayList<String> getColname(int i){
+		StringTokenizer strTkn = new StringTokenizer(this.rawColname.get(i), ",");
+		ArrayList<String> arrLis = new ArrayList<String>(this.rawColname.get(i).length());
 		while(strTkn.hasMoreTokens())
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
