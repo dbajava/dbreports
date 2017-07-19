@@ -1,11 +1,30 @@
 package dbasuite;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 @XmlRootElement( name = "instance" )
@@ -20,7 +39,6 @@ public class Instance {
 	private String mailto;
 	private String hostmail;
 	List<Report> reports;
-
 
 	public String getDbName() {
 		return dbName;
@@ -91,7 +109,6 @@ public class Instance {
 	public void setFantasyName(String fantasyName) {
 		this.fantasyName = fantasyName;
 	}
-
 	public ArrayList<String> getToMail(){
 		StringTokenizer strTkn = new StringTokenizer(this.mailto, ",");
 		ArrayList<String> arrLis = new ArrayList<String>(this.mailto.length());
@@ -99,5 +116,46 @@ public class Instance {
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
 	}
-
+	public void sendMail(String content){
+		String from = "AO_Notification_NoReply@boi.com";
+		String host = this.getHostmail();
+		Properties properties = System.getProperties();  
+		properties.setProperty("mail.smtp.host", host);  
+		Session session = Session.getDefaultInstance(properties);  
+		try{  
+			Message message = new MimeMessage(session);  
+			message.setFrom(new InternetAddress(from));  
+			for (int i=0;i<this.getToMail().size();i++)
+				message.addRecipient(Message.RecipientType.TO,new InternetAddress(this.getToMail().get(i)));  
+			message.setSubject("Database Report - Instance: "+this.getFantasyName());
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd") ;
+			Date date = new Date();
+			String curDate =dateFormat.format(date);
+			File htmlFile = new File(this.getDbName()+"_"+curDate+".html");
+			FileWriter fw= new FileWriter(htmlFile);;
+			fw.write(content);
+			fw.close();
+			DataSource source = new FileDataSource(htmlFile);
+			BodyPart messageBodyPart = new MimeBodyPart();
+			dateFormat = new SimpleDateFormat("dd/MM/yyyy") ;
+			curDate =dateFormat.format(date);
+			messageBodyPart.setText("Please find attached the report for instance: "+this.getDbName()+"\nDate: "+curDate+"\n\nBEPPAS Integration");
+			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(messageBodyPart);
+			messageBodyPart = new MimeBodyPart();
+			dateFormat = new SimpleDateFormat("ddMMyyyy") ;
+			curDate =dateFormat.format(date);
+			messageBodyPart.setDataHandler(new DataHandler(source));
+			messageBodyPart.setFileName(this.getDbName()+"_"+curDate+".html");
+			multipart.addBodyPart(messageBodyPart);
+			message.setContent(multipart);
+			Transport.send(message);  
+			htmlFile.delete();
+		}catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}  
 }

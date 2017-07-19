@@ -1,5 +1,9 @@
 package dbasuite;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,6 +22,7 @@ public class Report {
 	private String dayOfWeek;
 	private String dayOfMonth;
 	private String runHour;
+	
 	public String getTitle() {
 		return title;
 	}
@@ -60,7 +65,6 @@ public class Report {
 	public void setrunHour(String runH) {
 		this.runHour = runH;
 	}
-
 	public ArrayList<String> getDaysOfWeek(){
 		StringTokenizer strTkn = new StringTokenizer(this.dayOfWeek, ",");
 		ArrayList<String> arrLis = new ArrayList<String>(this.dayOfWeek.length());
@@ -68,7 +72,6 @@ public class Report {
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
 	}
-
 	public ArrayList<String> getColname(int i){
 		StringTokenizer strTkn = new StringTokenizer(this.rawColname.get(i), ",");
 		ArrayList<String> arrLis = new ArrayList<String>(this.rawColname.get(i).length());
@@ -76,7 +79,6 @@ public class Report {
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
 	}
-
 	public ArrayList<String> getDaysofMonth(){
 		StringTokenizer strTkn = new StringTokenizer(this.dayOfMonth, ",");
 		ArrayList<String> arrLis = new ArrayList<String>(this.dayOfMonth.length());
@@ -84,7 +86,6 @@ public class Report {
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
 	}
-
 	public ArrayList<String> getRunHours(){
 		StringTokenizer strTkn = new StringTokenizer(this.runHour, ",");
 		ArrayList<String> arrLis = new ArrayList<String>(this.runHour.length());
@@ -92,7 +93,6 @@ public class Report {
 			arrLis.add(strTkn.nextToken());
 		return arrLis;
 	}
-
 	public boolean toRun(){
 		ArrayList<String> dayOfWeek =this.getDaysOfWeek();
 		String daysArray[] = {"sunday","monday","tuesday", "wednesday","thursday","friday", "saturday"};
@@ -111,7 +111,7 @@ public class Report {
 		int hour = calendar.get(Calendar.HOUR_OF_DAY);
 		boolean hourRun=false;
 		for (int i=0;i<runHour.size();i++){
-			if(runHour.get(i).equals(String.valueOf(hour))){
+			if((runHour.get(i).equals(String.valueOf(hour)))||(runHour.get(i).toLowerCase().equals("anytime"))){
 				hourRun=true;
 			}
 		}
@@ -131,5 +131,37 @@ public class Report {
 			return false;
 		}
 	}
-
+	public ResultSet runQuery(String sql,Statement stm){
+		ResultSet rs=null;
+		try {
+			rs = stm.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return rs;
+	}
+	public String addResults(ResultSet rs){
+		String content="";
+		content=content+"<tr>";
+		ResultSetMetaData rsmd;
+		int columnsNumber=0;
+		try {
+			rsmd = rs.getMetaData();
+			columnsNumber = rsmd.getColumnCount();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			while (rs.next()) {
+				for(int i=1;i<=columnsNumber;i++){
+					String tempVal=rs.getString(i);
+					content=content+"<td>"+tempVal+"</td>";
+				}
+				content=content+"</tr>";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return content;
+	}
 }

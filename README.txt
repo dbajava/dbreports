@@ -4,10 +4,13 @@ Version Control
 ----------------------
 Version Control
 - 1.0 Created 07/04/2017 
+- 1.1 Added tag<dayofmonth> and <runhour>
+- 1.2 Now is possible to add more than one query per report. Add as many <colnames> and <query> in a report as you want
+- 1.3 Removed the N0N3 title, now if a non-titled report is needed, leave the title in blank
 ----------------------
 
 ----------------------
-Command Line Arguments (TODO)
+Command Line Arguments 
 ----------------------
 s silent mode (use this argument for schedules)
 c create html file
@@ -26,6 +29,19 @@ To install dbreports you will need:
 - Add your xml files to the xml folder
 
 ----------------------
+How to run
+----------------------
+-On dbreport.jar path, using command line, run the following command:
+java -jar dbreport.jar -<argument>
+eg. 
+java -jar dbreport.jar c s
+java -jar dbreport.jar s
+
+-You can run standalone xml for tests, just use the parameter xmlsa=xmlfile.xml. Note that the xmlfile.xml has to be on the xml folder
+java -Dxmlsa=db01_dbreport.xml -jar dbreport.jar 
+
+Schedule dbreport.jar on crontab or taskmanager to run every hour
+----------------------
 How to generate an encrypted password
 ----------------------
 -On dbreport.jar
@@ -34,7 +50,6 @@ java -Dpasswd=<newPassword> -jar dbreport.jar
 ----------------------
 XML configuration
 ----------------------
-Check the project DBReports-XMLDesigner. It's a graphical interface that can help you to create this XML file. Otherwise, just build your own xml following the instructions. 
 Dbreports works in one xml file per database instance. Every file holds only one database instace connection parameters and as many reports as it's needed.
 These are the necessary parameters for the database xml file:
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -48,19 +63,21 @@ These are the necessary parameters for the database xml file:
 		<mailto>pat.murphy@eeee.com</mailto> --Email(s) that will recive the report. for more than one e-mail use ","
 		<mailhost>54.33.162.22</mailhost> -- SMTP server needed to send e=mail
 		<report> -- add one tag report for each report for this particular instance
-			<title>N0N3</title> - Report Title
+			<title></title> - Report Title
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query> -- Report Query - Please check XML special chars session
 			<colnames>instance_name,host_name,version,startup_time,date</colnames> -- Column name that you want to show on report
 			<dayofweek>Everyday</dayofweek> --What day of week the report will run. You can write everyday for all days of week(Mon-Sun) or you can write the days that you'd like that the report run separed by ",": Monday,Friday,Sunday
+		<dayofmonth>9</dayofmonth> -- From 1 to 31, If you will use this option, change the <dayofweek> tag to "Month" or any word but "Everyday" or a actual week day
+		<runhour>12</runhour> -- hour that the report will run. put the keyword "anytime" to run at anytime.
 		</report>
 </instance>
 
 ----------------------
 XML Specials
 ----------------------
--- If your report name is N0N3(N zero N three) the report will have no title and no division(<hr>) with the next report, Usefull for reports that uses more than one query.
+-- If your report name is blank the report will have no title and no division(<hr>) with the next report.
 -- Special chars
-Symbol 								Escape Sequence
+    Symbol 	  					   Escape Sequence
 < (less-than)						&#60; or &lt;
 > (greater-than)					&#62; or &gt;
 & (ampersand)						&#38;
@@ -69,42 +86,36 @@ Symbol 								Escape Sequence
 -- Check the last session XML Example
 
 ----------------------
-How to run
-----------------------
--On dbreport.jar path, using command line, run the following command:
-java -jar dbreport.jar -<argument>
-eg. 
-java -jar dbreport.jar c s
-java -jar dbreport.jar s
-
-----------------------
-TODO
-----------------------
-- Remove unecessary files from jdbc and mail libraries
-
-----------------------
 XML Example
 ----------------------
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <instance>
-	<iname>ptrb.eeee.com</iname> 
-		<fname>PTRB - Application Report</fname> 
-		<port>1921</port> 
-		<hostname>svora03.imagi.nation</hostname>
-		<username>patmurphy</username>
-		<password>nOpAsSfOrYa</password> 
-		<mailto>pat.murphy@eeee.com</mailto> 
-		<mailhost>54.33.162.22</mailhost> 
+		<iname>gppmpq.boi.com</iname>
+		<fname>GPPMPQ - Application Report</fname>
+		<port>1921</port>
+		<hostname>bbcqgsm28.boigroup.net</hostname>
+		<username>b938482</username>
+		<password>NoP4$$F4rU%%==</password>
+		<mailto>igor.laguardia@tralala.com</mailto>
+		<mailhost>20.51.120.1</mailhost>
 		<report>
 			<title>N0N3</title>
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query>
 			<colnames>instance_name,host_name,version,startup_time,date</colnames>
 			<dayofweek>Everyday</dayofweek>
+			<dayofmonth>0</dayofmonth>
+			<runhour>12</runhour>
 		</report>
 		<report>
 			<title>EOD job</title>
 			<query>select count(*),buyer_name from tableowner1.tablebuyers</query>
 			<colnames>Number of buyers, buyer name</colnames>
-			<dayofweek>friday</dayofweek>
+			<dayofweek>Month</dayofweek>
+			<dayofmonth>9,15,20</dayofmonth>
+			<runhour>10,12,14</runhour>
 		</report>	
 </instance>
+----------------------
+TODO
+----------------------
+- Remove unecessary files from jdbc and mail libraries
