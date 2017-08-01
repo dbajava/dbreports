@@ -65,7 +65,6 @@ public class DBASuite {
 			}
 		}
 		File[] files = new File[1];
-		//files=new File("xml").listFiles();
 		if (!argS){
 			System.out.println("checking xml files...");
 		}
@@ -92,8 +91,7 @@ public class DBASuite {
 							System.out.println("instance connection string: "+"jdbc:oracle:thin:@"+instance.getHostName()+":"+instance.getPort()+"/"+instance.getDbName());
 						}
 						Class.forName("oracle.jdbc.driver.OracleDriver");
-						Connection connection = null;
-						connection = DriverManager.getConnection("jdbc:oracle:thin:@"+instance.getHostName()+":"+instance.getPort()+"/"+instance.getDbName(),instance.getUserName(),decrypt(instance.getPassw()));
+						Connection connection  = DriverManager.getConnection("jdbc:oracle:thin:@"+instance.getHostName()+":"+instance.getPort()+"/"+instance.getDbName(),instance.getUserName(),decrypt(instance.getPassw()));
 						Statement stmt = connection.createStatement();
 						String content="<html>";
 						content=content+"<body><title>Database Report instance: "+instance.getFantasyName()+"</title>";
@@ -114,10 +112,8 @@ public class DBASuite {
 									content=content+"<center><table border=\"1\"><tr>";
 									for(int n=0;n<arrLis.size();n++) content=content+"<th>"+arrLis.get(n).toString()+"</th>";
 									content=content+" </tr>";
-									//ResultSet rs = runQuery(repQuery.get(k), stmt);
 									ResultSet rs = report.runQuery(repQuery.get(k), stmt);
 									content=content+report.addResults(rs);
-									//content=content+addResults(rs);
 									content=content+"</table></center></body></font></html>";
 								}
 							}
@@ -130,10 +126,8 @@ public class DBASuite {
 								Date date = new Date();
 								String curDate =dateFormat.format(date);
 								String htmlName="report_"+instance.getDbName()+"_"+curDate+".html";
-								if (!argS){
-									System.out.println("Writing file report.html to path:");
-									System.out.println(System.getProperty("user.dir")+File.separator+htmlName);
-								}
+								System.out.println("Writing file report.html to path:");
+								System.out.println(System.getProperty("user.dir")+File.separator+htmlName);
 								File htmlFile = new File(System.getProperty("user.dir")+File.separator+htmlName);
 								FileWriter fw =new FileWriter(htmlFile);
 								fw.write(content);
@@ -145,18 +139,22 @@ public class DBASuite {
 									System.out.println("Sending email to:"+instance.getToMail());
 								}
 								instance.sendMail(content);
-								//sendMail(content,instance);
+								 System.gc();
 							}
 						}
 					}
 				}
 			}catch(Exception e){
-				System.out.println("==>>>>>>>>ALERT<<<<<==");
-				System.out.println("==>>>>>>>>ALERT<<<<<==");
-				System.out.println("==>>>>>>>>Fail to process file:"+"xml"+File.separator+file.getAbsoluteFile().getName());
-				System.out.println("==>>>>>>>>ALERT<<<<<==");
-				System.out.println("==>>>>>>>>ALERT<<<<<==");
-				e.printStackTrace();
+				File fXmlFile = new File("xml"+File.separator+"error_xml.conf");
+				JAXBContext jaxbContext;
+				jaxbContext = JAXBContext.newInstance(Instance.class);
+				Unmarshaller jaxbUnmarshaller;
+				jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				Instance instance = (Instance)jaxbUnmarshaller.unmarshal( fXmlFile );
+				instance.setFantasyName("Error parsing XML file: "+file.getAbsoluteFile().getName());
+				String content = e.getMessage();
+				instance.sendMail(content);
+				System.gc();
 			}
 		}
 
