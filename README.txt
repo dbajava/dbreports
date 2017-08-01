@@ -7,6 +7,9 @@ Version Control
 - 1.1 Added tag<dayofmonth> and <runhour>
 - 1.2 Now is possible to add more than one query per report. Add as many <colnames> and <query> in a report as you want
 - 1.3 Removed the N0N3 title, now if a non-titled report is needed, leave the title in blank
+- 1.4 Classes more organized. Added the feature to run the report at any time using the "anytime" keyword.
+- 1.5 Dealing with bad XML format
+
 ----------------------
 
 ----------------------
@@ -61,7 +64,7 @@ These are the necessary parameters for the database xml file:
 		<username>patmurphy</username> --Database username
 		<password>nOpAsSfOrYa</password> --Database password
 		<mailto>pat.murphy@eeee.com</mailto> --Email(s) that will recive the report. for more than one e-mail use ","
-		<mailhost>54.33.162.22</mailhost> -- SMTP server needed to send e=mail
+		<mailhost>54.33.162.22</mailhost> -- SMTP server needed to send e-mail
 		<report> -- add one tag report for each report for this particular instance
 			<title></title> - Report Title
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query> -- Report Query - Please check XML special chars session
@@ -115,7 +118,23 @@ XML Example
 			<runhour>10,12,14</runhour>
 		</report>	
 </instance>
+
+----------------------
+error_xml.conf
+----------------------
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<instance>
+		<iname>error_xml</iname> -- you can leave it blank or as is.
+		<fname>Error on processing XML file</fname> - here goes your error mail subject
+		<port>0000</port>-- you can leave it blank or as is.
+		<hostname></hostname>-- you can leave it blank or as is.
+		<username></username>-- you can leave it blank or as is.
+		 <password></password>-- you can leave it blank or as is.
+    <mailto>igor.laguardia@tchutchutchu.com</mailto> --Email(s) that will recive the report. for more than one e-mail use ","
+    <mailhost>22.22.22.22</mailhost> -- SMTP server needed to send e-mail
+</instance>
+
 ----------------------
 TODO
 ----------------------
-- Remove unecessary files from jdbc and mail libraries
+- Remove not necessary files from jdbc and mail libraries
