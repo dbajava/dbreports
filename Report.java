@@ -21,7 +21,7 @@ public class Report {
 	private String dayOfWeek;
 	private String dayOfMonth;
 	private String runHour;
-	
+
 	public String getTitle() {
 		return title;
 	}

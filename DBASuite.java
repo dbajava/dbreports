@@ -126,8 +126,10 @@ public class DBASuite {
 								Date date = new Date();
 								String curDate =dateFormat.format(date);
 								String htmlName="report_"+instance.getDbName()+"_"+curDate+".html";
-								System.out.println("Writing file report.html to path:");
-								System.out.println(System.getProperty("user.dir")+File.separator+htmlName);
+								if (!argS){
+									System.out.println("Writing file report.html to path:");
+									System.out.println(System.getProperty("user.dir")+File.separator+htmlName);
+								}
 								File htmlFile = new File(System.getProperty("user.dir")+File.separator+htmlName);
 								FileWriter fw =new FileWriter(htmlFile);
 								fw.write(content);
@@ -139,18 +141,23 @@ public class DBASuite {
 									System.out.println("Sending email to:"+instance.getToMail());
 								}
 								instance.sendMail(content);
-								 System.gc();
+								System.gc();
 							}
 						}
 					}
 				}
 			}catch(Exception e){
+				if (!argS){
+					System.out.println(">>>>>>>>>>>ALERT<<<<<<<<<<<<<<");
+					System.out.println("Error parsing XML file: "+file.getAbsoluteFile().getName());
+					System.out.println(">>>>>>>>>>>ALERT<<<<<<<<<<<<<<");
+				}
 				File fXmlFile = new File("xml"+File.separator+"error_xml.conf");
 				JAXBContext jaxbContext;
 				jaxbContext = JAXBContext.newInstance(Instance.class);
 				Unmarshaller jaxbUnmarshaller;
 				jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				Instance instance = (Instance)jaxbUnmarshaller.unmarshal( fXmlFile );
+				Instance instance = (Instance)jaxbUnmarshaller.unmarshal(fXmlFile);
 				instance.setFantasyName("Error parsing XML file: "+file.getAbsoluteFile().getName());
 				String content = e.getMessage();
 				instance.sendMail(content);

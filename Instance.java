@@ -126,7 +126,7 @@ public class Instance {
 			message.setFrom(new InternetAddress(from));  
 			for (int i=0;i<this.getToMail().size();i++)
 				message.addRecipient(Message.RecipientType.TO,new InternetAddress(this.getToMail().get(i)));  
-			message.setSubject("Database Report - Instance: "+this.getFantasyName());
+			message.setSubject(this.getFantasyName());
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd") ;
 			Date date = new Date();
 			String curDate =dateFormat.format(date);
