@@ -160,6 +160,7 @@ public class DBASuite {
 				Instance instance = (Instance)jaxbUnmarshaller.unmarshal(fXmlFile);
 				instance.setFantasyName("Error parsing XML file: "+file.getAbsoluteFile().getName());
 				String content = e.getMessage();
+				instance.setPort("666");
 				instance.sendMail(content);
 				System.gc();
 			}

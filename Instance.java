@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 @XmlRootElement( name = "instance" )
@@ -134,20 +135,28 @@ public class Instance {
 			FileWriter fw= new FileWriter(htmlFile);;
 			fw.write(content);
 			fw.close();
-			DataSource source = new FileDataSource(htmlFile);
-			BodyPart messageBodyPart = new MimeBodyPart();
-			dateFormat = new SimpleDateFormat("dd/MM/yyyy") ;
-			curDate =dateFormat.format(date);
-			messageBodyPart.setText("Please find attached the report for instance: "+this.getDbName()+"\nDate: "+curDate+"\n\nBEPPAS Integration");
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart);
-			messageBodyPart = new MimeBodyPart();
-			dateFormat = new SimpleDateFormat("ddMMyyyy") ;
-			curDate =dateFormat.format(date);
-			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName(this.getDbName()+"_"+curDate+".html");
-			multipart.addBodyPart(messageBodyPart);
-			message.setContent(multipart);
+			if(this.port.equals("666")){
+				Scanner scanner = new Scanner( htmlFile, "UTF-8" );
+				String text = scanner.useDelimiter("\\A").next();
+				text="Error found processing the XML file: "+text;
+				scanner.close(); 
+				message.setContent(text, "text/html");
+			}else{
+				DataSource source = new FileDataSource(htmlFile);
+				BodyPart messageBodyPart = new MimeBodyPart();
+				dateFormat = new SimpleDateFormat("dd/MM/yyyy") ;
+				curDate =dateFormat.format(date);
+				messageBodyPart.setText("Please find attached the report for instance: "+this.getDbName()+"\nDate: "+curDate+"\n\nBEPPAS Integration");
+				Multipart multipart = new MimeMultipart();
+				multipart.addBodyPart(messageBodyPart);
+				messageBodyPart = new MimeBodyPart();
+				dateFormat = new SimpleDateFormat("ddMMyyyy") ;
+				curDate =dateFormat.format(date);
+				messageBodyPart.setDataHandler(new DataHandler(source));
+				messageBodyPart.setFileName(this.getDbName()+"_"+curDate+".html");
+				multipart.addBodyPart(messageBodyPart);
+				message.setContent(multipart);
+			}
 			Transport.send(message);  
 			htmlFile.delete();
 		}catch (MessagingException e) {
@@ -156,5 +165,5 @@ public class Instance {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-	}  
+	}
 }
