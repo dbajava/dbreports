@@ -28,7 +28,7 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 @XmlRootElement( name = "instance" )
-@XmlType( propOrder = { "dbName", "fantasyName","hostName", "port", "userName","passw","reports","mailto","hostmail" } )
+@XmlType( propOrder = { "dbName", "fantasyName","hostName", "port", "userName","passw","reports","mailto","hostmail","fatt" } )
 public class Instance {
 	private String dbName;
 	private String fantasyName;
@@ -38,8 +38,17 @@ public class Instance {
 	private String passw;
 	private String mailto;
 	private String hostmail;
+	private String fatt;
 	List<Report> reports;
 
+	
+	public String getFatt() {
+		return fatt;
+	}
+	@XmlElement( name = "fattach" )
+	public void setFatt(String fatt) {
+		this.fatt = fatt;
+	}
 	public String getDbName() {
 		return dbName;
 	}
@@ -135,10 +144,11 @@ public class Instance {
 			FileWriter fw= new FileWriter(htmlFile);;
 			fw.write(content);
 			fw.close();
-			if(this.port.equals("666")){
+			if(this.port.equals("666")||this.fatt.toLowerCase().equals("false")){
 				Scanner scanner = new Scanner( htmlFile, "UTF-8" );
 				String text = scanner.useDelimiter("\\A").next();
-				text="Error found processing the XML file: "+text;
+				if(this.port.equals("666"))
+					text="Error found processing the XML file: "+text;
 				scanner.close(); 
 				message.setContent(text, "text/html");
 			}else{

@@ -9,6 +9,7 @@ Version Control
 - 1.3 Removed the N0N3 title, now if a non-titled report is needed, leave the title in blank
 - 1.4 Classes more organized. Added the feature to run the report at any time using the "anytime" keyword.
 - 1.5 Dealing with bad XML format
+- 1.6 Added tag <fattach> on instance level. set it to false to get the report on the e-mail body instead of attached file.
 
 ----------------------
 
@@ -65,6 +66,7 @@ These are the necessary parameters for the database xml file:
 		<password>nOpAsSfOrYa</password> --Database password
 		<mailto>pat.murphy@eeee.com</mailto> --Email(s) that will recive the report. for more than one e-mail use ","
 		<mailhost>54.33.162.22</mailhost> -- SMTP server needed to send e-mail
+		<fattach>true</fattach> -- set it to false to get the report on the e-mail body instead of attached file. True to have the report attached
 		<report> -- add one tag report for each report for this particular instance
 			<title></title> - Report Title
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query> -- Report Query - Please check XML special chars session
@@ -93,7 +95,7 @@ XML Example
 ----------------------
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <instance>
-		<iname>gppmpq.boi.com</iname>
+		<iname>gppmpqes</iname>
 		<fname>GPPMPQ - Application Report</fname>
 		<port>1921</port>
 		<hostname>bbcqgsm28.boigroup.net</hostname>
@@ -101,6 +103,7 @@ XML Example
 		<password>NoP4$$F4rU%%==</password>
 		<mailto>igor.laguardia@tralala.com</mailto>
 		<mailhost>20.51.120.1</mailhost>
+		<fattach>true</fattach> 
 		<report>
 			<title>N0N3</title>
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query>
@@ -113,10 +116,18 @@ XML Example
 			<title>EOD job</title>
 			<query>select count(*),buyer_name from tableowner1.tablebuyers</query>
 			<colnames>Number of buyers, buyer name</colnames>
-			<dayofweek>Month</dayofweek>
+			<dayofweek>0</dayofweek>
 			<dayofmonth>9,15,20</dayofmonth>
 			<runhour>10,12,14</runhour>
 		</report>	
+			<report>
+			<title>EOD job</title>
+			<query>select count(*),buyer_name from tableowner1.tablebuyers</query>
+			<colnames>Number of buyers, buyer name</colnames>
+			<dayofweek>Everyday</dayofweek>
+			<dayofmonth>0</dayofmonth>
+			<runhour>anytime</runhour>
+		</report>
 </instance>
 
 ----------------------

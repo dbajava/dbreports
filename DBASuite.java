@@ -37,8 +37,10 @@ public class DBASuite {
 			(byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
 	};
 	public static void main(String[] args) throws JAXBException, SQLException, IOException, GeneralSecurityException {
-		if(args.length>2){
-			System.out.println("Invalid number of arguments Max is 2: c s");
+		if(args.length>3){
+			System.out.println("Invalid number of arguments Max is 3: c s a");
+			System.out.println("s silent mode (use this argument for schedules)");
+			System.out.println("c create html file. e-mail will not be send");
 			System.exit(0);
 		}
 		if(System.getProperty("passwd")!=null){
@@ -53,8 +55,8 @@ public class DBASuite {
 		}
 		if(args.length!=0){
 			for (int i =0;i<args.length;i++){
-				if((!args[i].equals("s"))&&(!args[i].equals("c"))){
-					System.out.println("Invalid argument: use s or c");
+				if((!args[i].equals("s"))&&(!args[i].equals("c")&&(!args[i].equals("a")))){
+					System.out.println("Invalid argument: use s, c or a");
 					System.exit(0);
 				}else if(args[i].equals("s")){
 					argS=true;
@@ -66,6 +68,14 @@ public class DBASuite {
 		}
 		File[] files = new File[1];
 		if (!argS){
+				 System.out.println("##::::::::::'###:::::'######:::'##::::'##::::'###::::'########::'########::'####::::'###::::");
+				 System.out.println("##:::::::::'## ##:::'##... ##:: ##:::: ##:::'## ##::: ##.... ##: ##.... ##:. ##::::'## ##:::");
+				 System.out.println("##::::::::'##:. ##:: ##:::..::: ##:::: ##::'##:. ##:: ##:::: ##: ##:::: ##:: ##:::'##:. ##::");
+				 System.out.println("##:::::::'##:::. ##: ##::'####: ##:::: ##:'##:::. ##: ########:: ##:::: ##:: ##::'##:::. ##:");
+				 System.out.println("##::::::: #########: ##::: ##:: ##:::: ##: #########: ##.. ##::: ##:::: ##:: ##:: #########:");
+				 System.out.println("##::::::: ##.... ##: ##::: ##:: ##:::: ##: ##.... ##: ##::. ##:: ##:::: ##:: ##:: ##.... ##:");
+				 System.out.println("########: ##:::: ##:. ######:::. #######:: ##:::: ##: ##:::. ##: ########::'####: ##:::: ##:");
+				 System.out.println("https://www.linkedin.com/in/igorlf/......:::..:::::..::..:::::..::........:::.DBAJAVA::::..:");
 			System.out.println("checking xml files...");
 		}
 		if (System.getProperty("xmlsa")!=null){
@@ -150,6 +160,7 @@ public class DBASuite {
 				if (!argS){
 					System.out.println(">>>>>>>>>>>ALERT<<<<<<<<<<<<<<");
 					System.out.println("Error parsing XML file: "+file.getAbsoluteFile().getName());
+					System.out.println(e.getMessage());
 					System.out.println(">>>>>>>>>>>ALERT<<<<<<<<<<<<<<");
 				}
 				File fXmlFile = new File("xml"+File.separator+"error_xml.conf");
