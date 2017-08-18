@@ -8,6 +8,7 @@
 		<password>pxmFolz1lFyCv4mqTGcDMQ==</password>
 		<mailto>igorlf@gmail.com</mailto>
 		<mailhost>19.11.44.32</mailhost>
+		<fattach>false</fattach>
 		<report>
 			<title>N0N3</title>
 			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query>

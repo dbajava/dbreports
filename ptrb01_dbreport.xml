@@ -8,64 +8,301 @@
 		<password>pxmFolz1lFyCv4mqTGcDMQ==</password>
 		<mailto>igorlf@gmail.com</mailto>
 		<mailhost>19.11.44.32</mailhost>
-		<report>
-			<title>N0N3</title>
-			<query>select instance_name,host_name,version,startup_time,SYSDATE from gv$instance</query>
-			<colnames>instance_name,host_name,version,startup_time,date</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Memory and Process</title>
-			<query>select s.inst_id,decode(s.username,null,&#39;Background Service&#39;,s.program) PROGRAM,decode(s.username, null,&#39;oracle internal&#39;,s.username) Username, round(sum(p.pga_used_mem/1024/1024),2) Used_PGA,round(sum(p.pga_max_mem/1024/1024),2) Max_PGA,COUNT(*) SESSION# from gv$session s,gv$process p where s.inst_id=p.inst_id and s.paddr=p.addr and s.inst_id=p.inst_id group by s.inst_id,S.USERNAME,decode(s.username,null,&#39;Background Service&#39;,s.program) order by 3,round(sum(p.pga_used_mem/1024/1024),2) desc</query>
-			<colnames>inst_id,program,username,Used_PGA,Max_PGA,Session Number</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Sessions with more than 20MB PGA</title>
-			<query>select s.username,s.status,p.program,p.pga_used_mem/1024/1024,p.pga_alloc_mem/1024/1024,p.pga_max_mem/1024/1024 from gv$process p,gv$session s where p.addr=s.paddr and p.inst_id=s.inst_id and p.pga_used_mem/1024/1024&#62;20 order by 5 desc,4 desc,6 desc</query>
-			<colnames>USERNAME,STATUS,PGA USED,PGA ALLOCATED,MAX PGA</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Session Status</title>
-			<query>select s.inst_id,s.username,s.status,count(1) SESSION# from gv$session s,gv$process p where s.inst_id=p.inst_id and s.paddr=p.addr and s.username is not null group by s.inst_id,s.username,s.status</query>
-			<colnames>inst_id,username,status,session number</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Tablespace Status</title>
-			<query>select df.tablespace_name,totalusedspace,(df.totalspace - tu.totalusedspace),round(100 * ( (df.totalspace - tu.totalusedspace)/ df.totalspace)) from (select tablespace_name,round(sum(bytes) / 1048576) TotalSpace from dba_data_files  group by tablespace_name) df,(select round(sum(bytes)/(1024*1024)) totalusedspace, tablespace_name from dba_segments  group by tablespace_name) tu where df.tablespace_name = tu.tablespace_name  ORDER BY 4</query>
-			<colnames>Tablespace Name,Total Space(MB),Free Space(MB),% Free</colnames>
-			<dayofweek>Friday</dayofweek>
-		</report>
-		<report>
-			<title>Object Status</title>
-			<query>select OWNER,OBJECT_NAME from dba_objects where status!=&#39;VALID&#39; UNION ALL SELECT DISTINCT &#39;NO INVALID OBJECT&#39;,NULL FROM DBA_OBJECTS</query>
-			<colnames>OWNER,OBJECT_NAME</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Redo Log Switch</title>
-			<query>SELECT to_char(first_time,&#39;dd-MON-yyyy&#39;) day,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;00&#39;,1,0)),&#39;99&#39;) &#34;00&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;01&#39;,1,0)),&#39;99&#39;) &#34;01&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;02&#39;,1,0)),&#39;99&#39;) &#34;02&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;03&#39;,1,0)),&#39;99&#39;) &#34;03&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;04&#39;,1,0)),&#39;99&#39;) &#34;04&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;05&#39;,1,0)),&#39;99&#39;) &#34;05&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;06&#39;,1,0)),&#39;99&#39;) &#34;06&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;07&#39;,1,0)),&#39;99&#39;) &#34;07&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;08&#39;,1,0)),&#39;99&#39;) &#34;0&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;09&#39;,1,0)),&#39;99&#39;) &#34;09&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;10&#39;,1,0)),&#39;99&#39;) &#34;10&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;11&#39;,1,0)),&#39;99&#39;) &#34;11&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;12&#39;,1,0)),&#39;99&#39;) &#34;12&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;13&#39;,1,0)),&#39;99&#39;) &#34;13&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;14&#39;,1,0)),&#39;99&#39;) &#34;14&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;15&#39;,1,0)),&#39;99&#39;) &#34;15&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;16&#39;,1,0)),&#39;99&#39;) &#34;16&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;17&#39;,1,0)),&#39;99&#39;) &#34;17&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;18&#39;,1,0)),&#39;99&#39;) &#34;18&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;19&#39;,1,0)),&#39;99&#39;) &#34;19&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;20&#39;,1,0)),&#39;99&#39;) &#34;20&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;21&#39;,1,0)),&#39;99&#39;) &#34;21&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;22&#39;,1,0)),&#39;99&#39;) &#34;22&#34;,to_char(sum(decode(to_char(first_time,&#39;HH24&#39;),&#39;23&#39;,1,0)),&#39;99&#39;) &#34;23&#34; from v$log_history where to_char(first_time,&#39;MON&#39;)=to_char(sysdate,&#39;MON&#39;) GROUP by to_char(first_time,&#39;dd-MON-yyyy&#39;) order by 1</query>
-			<colnames>Day,00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>Backup Report</title>
-			<query>select distinct DECODE(INCREMENTAL_LEVEL, 1, &#39;INCREMENTAL&#39;, 0,&#39;FULL&#39;) &#34;BACKUP_TYPE&#34;,b.OUTPUT_BYTES_DISPLAY,to_char(b.START_TIME,&#39;yyyy-mm-dd hh24:mi&#39;) start_time,to_char(b.end_time, &#39;yyyy-mm-dd hh24:mi&#39;) END_TIME, status from V$RMAN_BACKUP_JOB_DETAILS b,V$BACKUP_SET s where trunc(s.START_TIME)=trunc(b.START_TIME) and s.incremental_level is not null and b.input_type=&#39;DB INCR&#39; and b.start_time > trunc(sysdate-2)</query>
-			<colnames>BACKUP_TYPE,OUTPUT_BYTES_DISPLAY,START_TIME,END_TIME,STATUS</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
-		<report>
-			<title>FRA Status</title>
-			<query>SELECT name,round(space_limit/1024/1024/1024,2) TOTAL,round(space_used/1024/1024/1024,2) USED,round(space_used/space_limit*100,2) &#34;%Used&#34;,number_of_files FROM V$RECOVERY_FILE_DEST</query>
-			<colnames>NAME,TOTAL SPACE(GB),USED SPACE(GB),% USED</colnames>
-			<dayofweek>Sunday</dayofweek>
-		</report>
-		<report>
-			<title>N0N3</title>
-			<query>SELECT FILE_TYPE,PERCENT_SPACE_USED,PERCENT_SPACE_RECLAIMABLE,NUMBER_OF_FILES FROM V$RECOVERY_AREA_USAGE</query>
-			<colnames>FILE_TYPE,PERCENT_SPACE_USED,PERCENT_SPACE_RECLAIMABLE,NUMBER_OF_FILES</colnames>
-			<dayofweek>Everyday</dayofweek>
-		</report>
+		<fattach>false</fattach>
+  <report>
+        <title></title>
+        <query>SELECT INST_ID,INSTANCE_NAME,HOST_NAME,STATUS,STARTUP_TIME,VERSION FROM GV$INSTANCE</query>
+        <colnames>Instance ID,Instance Name,Hostname,Status,Startup Time,Version</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+<report>
+        <title>SESSION AND MEMORY</title>
+        <query>select s.inst_id,decode(s.username,null,'Background Service',s.program) PROGRAM,&#xD;
+s.username, round(sum(p.pga_used_mem/1024/1024),2) "Used PGA",&#xD;
+round(sum(p.pga_max_mem/1024/1024),2) "Max PGA",COUNT(*) SESSION#&#xD;
+from gv$session s,gv$process p&#xD;
+where s.inst_id=p.inst_id&#xD;
+and s.paddr=p.addr&#xD;
+and s.inst_id=p.inst_id&#xD;
+group by s.inst_id,S.USERNAME,decode(s.username,null,'Background Service',s.program)&#xD;
+order by round(sum(p.pga_used_mem/1024/1024),2) desc&#xD;
+</query>
+        <colnames>Instance Id, Program,Username,Used PGA,Max PGA,Session Count</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>SESSION AND STATUS</title>
+        <query>select s.inst_id,s.username,s.status,count(1) SESSION# from gv$session s,gv$process p&#xD;
+where s.inst_id=p.inst_id&#xD;
+and s.paddr=p.addr and s.username is not null&#xD;
+group by s.inst_id,s.username,s.status&#xD;
+order by username,status</query>
+        <colnames>Instance ID,Username,Status,Session Count</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>OBJECT STATUS</title>
+        <query>select OWNER,OBJECT_NAME,status from dba_objects where status&lt;&gt;'VALID'&#xD;
+UNION ALL&#xD;
+SELECT DISTINCT 'NO INVALID OBJECT','','' FROM DBA_OBJECTS</query>
+        <colnames>Object Owner, Object Name,Status</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>TABLESPACE STATUS</title>
+        <query>WITH df AS (SELECT tablespace_name, SUM(bytes) bytes, COUNT(*) cnt, DECODE(SUM(DECODE(autoextensible,'NO',0,1)), 0, 'NO', 'YES') autoext, sum(DECODE(maxbytes,0,bytes,maxbytes)) maxbytes FROM dba_data_files GROUP BY tablespace_name), &#xD;
+     tf AS (SELECT tablespace_name, SUM(bytes) bytes, COUNT(*) cnt, DECODE(SUM(DECODE(autoextensible,'NO',0,1)), 0, 'NO', 'YES') autoext, sum(DECODE(maxbytes,0,bytes,maxbytes)) maxbytes FROM dba_temp_files GROUP BY tablespace_name), &#xD;
+     tm AS (SELECT tablespace_name, used_percent FROM dba_tablespace_usage_metrics),&#xD;
+     ts AS (SELECT tablespace_name, COUNT(*) segcnt FROM dba_segments GROUP BY tablespace_name)&#xD;
+SELECT d.tablespace_name, &#xD;
+       d.status,&#xD;
+       DECODE(d.contents,'PERMANENT',DECODE(d.extent_management,'LOCAL','LM','DM'),'TEMPORARY','TEMP',d.contents)||'-'||DECODE(d.allocation_type,'UNIFORM','UNI','SYS')||'-'||decode(d.segment_space_management,'AUTO','ASSM','MSSM') ts_type,&#xD;
+       a.cnt files,  &#xD;
+       NVL(s.segcnt,0) segments,&#xD;
+       ROUND(NVL(a.bytes / 1024 / 1024, 0), 3) Allocated_MB, &#xD;
+       ROUND(NVL(a.bytes - NVL(f.bytes, 0), 0)/1024/1024,3) Used_MB, &#xD;
+       ROUND(NVL(f.bytes, 0) / 1024 / 1024, 3) Free_MB, &#xD;
+       ROUND(NVL((a.bytes - NVL(f.bytes, 0)) / a.bytes * 100, 0), 2) Used_pct, &#xD;
+       ROUND(a.maxbytes / 1024 / 1024, 3)  max_ext_mb,&#xD;
+       ROUND(NVL(m.used_percent,0), 2) Max_used_pct&#xD;
+  FROM dba_tablespaces d, df a, tm m, ts s, (SELECT tablespace_name, SUM(bytes) bytes FROM dba_free_space GROUP BY tablespace_name) f &#xD;
+ WHERE d.tablespace_name = a.tablespace_name(+) &#xD;
+   AND d.tablespace_name = f.tablespace_name(+) &#xD;
+   AND d.tablespace_name = m.tablespace_name(+) &#xD;
+   AND d.tablespace_name = s.tablespace_name(+)&#xD;
+   AND NOT d.contents = 'UNDO'&#xD;
+   AND NOT ( d.extent_management = 'LOCAL' AND d.contents = 'TEMPORARY' ) &#xD;
+UNION ALL&#xD;
+-- TEMP TS&#xD;
+SELECT d.tablespace_name, &#xD;
+       d.status, &#xD;
+       DECODE(d.contents,'PERMANENT',DECODE(d.extent_management,'LOCAL','LM','DM'),'TEMPORARY','TEMP',d.contents)||'-'||DECODE(d.allocation_type,'UNIFORM','UNI','SYS')||'-'||decode(d.segment_space_management,'AUTO','ASSM','MSSM') ts_type, &#xD;
+       a.cnt, &#xD;
+       0,&#xD;
+       ROUND(NVL(a.bytes / 1024 / 1024, 0), 3) Allocated_MB, &#xD;
+       ROUND(NVL(t.ub*d.block_size, 0)/1024/1024, 3) Used_MB, &#xD;
+       ROUND((NVL(a.bytes ,0)/1024/1024 - NVL((t.ub*d.block_size), 0)/1024/1024), 3) Free_MB,&#xD;
+       ROUND(NVL((t.ub*d.block_size) / a.bytes * 100, 0), 2) Used_pct,&#xD;
+       ROUND(a.maxbytes / 1024 / 1024, 3)  max_size_mb, &#xD;
+       ROUND(NVL(m.used_percent,0), 2) Max_used_pct&#xD;
+  FROM dba_tablespaces d, tf a, tm m, (SELECT ss.tablespace_name , sum(ss.used_blocks) ub FROM gv$sort_segment ss GROUP BY ss.tablespace_name) t &#xD;
+ WHERE d.tablespace_name = a.tablespace_name(+) &#xD;
+   AND d.tablespace_name = t.tablespace_name(+) &#xD;
+   AND d.tablespace_name = m.tablespace_name(+) &#xD;
+   AND d.extent_management = 'LOCAL'&#xD;
+   AND d.contents = 'TEMPORARY'  &#xD;
+UNION ALL&#xD;
+-- UNDO TS&#xD;
+SELECT d.tablespace_name, &#xD;
+       d.status, &#xD;
+       DECODE(d.contents,'PERMANENT',DECODE(d.extent_management,'LOCAL','LM','DM'),'TEMPORARY','TEMP',d.contents)||'-'||DECODE(d.allocation_type,'UNIFORM','UNI','SYS')||'-'||decode(d.segment_space_management,'AUTO','ASSM','MSSM') ts_type, &#xD;
+       a.cnt, &#xD;
+       NVL(s.segcnt,0) segments,&#xD;
+       ROUND(NVL(a.bytes / 1024 / 1024, 0), 3) Allocated_MB, &#xD;
+       ROUND(NVL(u.bytes, 0) / 1024 / 1024, 3) Used_MB, &#xD;
+       ROUND(NVL(a.bytes - NVL(u.bytes, 0), 0)/1024/1024, 3) Free_MB,&#xD;
+       ROUND(NVL(u.bytes / a.bytes * 100, 0), 2) Used_pct, &#xD;
+       ROUND(a.maxbytes / 1024 / 1024, 3)  max_size_mb,&#xD;
+       ROUND(NVL(m.used_percent,0), 2) Max_used_pct&#xD;
+FROM dba_tablespaces d, df a, tm m, ts s, (SELECT tablespace_name, SUM(bytes) bytes FROM dba_undo_extents where status in ('ACTIVE','UNEXPIRED') GROUP BY tablespace_name) u &#xD;
+WHERE d.tablespace_name = a.tablespace_name(+) &#xD;
+AND d.tablespace_name = u.tablespace_name(+) &#xD;
+AND d.tablespace_name = m.tablespace_name(+) &#xD;
+AND d.tablespace_name = s.tablespace_name(+)&#xD;
+AND d.contents = 'UNDO'&#xD;
+ORDER BY Max_Used_pct desc</query>
+        <colnames>Tablespace Name,Status,Type,File Count,Segments,Allocated(MB),Used(MB),Free(MB),%Used,Max Ext(MB),%Max Used</colnames>
+        <dayofweek>Monday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>LOG SWITCH FREQUENCY</title>
+        <query>SELECT &#xD;
+to_char(first_time,'dd-MON-yyyy') day,&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'00',1,0)),'999') "00",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'01',1,0)),'999') "01",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'02',1,0)),'999') "02",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'03',1,0)),'999') "03",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'04',1,0)),'999') "04",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'05',1,0)),'999') "05",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'06',1,0)),'999') "06",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'07',1,0)),'999') "07",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'08',1,0)),'999') "0",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'09',1,0)),'999') "09",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'10',1,0)),'999') "10",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'11',1,0)),'999') "11",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'12',1,0)),'999') "12",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'13',1,0)),'999') "13",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'14',1,0)),'999') "14",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'15',1,0)),'999') "15",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'16',1,0)),'999') "16",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'17',1,0)),'999') "17",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'18',1,0)),'999') "18",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'19',1,0)),'999') "19",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'20',1,0)),'999') "20",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'21',1,0)),'999') "21",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'22',1,0)),'999') "22",&#xD;
+to_char(sum(decode(to_char(first_time,'HH24'),'23',1,0)),'999') "23"&#xD;
+from&#xD;
+v$log_history&#xD;
+where to_char(first_time,'MON')=to_char(sysdate,'MON')&#xD;
+GROUP by &#xD;
+to_char(first_time,'dd-MON-yyyy') order by 1</query>
+        <colnames>day,00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23</colnames>
+        <dayofweek>Monday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>BACKUP REPORT</title>
+        <query>select distinct DECODE(INCREMENTAL_LEVEL, 1, 'INCREMENTAL', 0,'FULL') "BACKUP_TYPE",&#xD;
+b.OUTPUT_BYTES_DISPLAY,to_char(b.START_TIME, 'yyyy-mm-dd hh24:mi') start_time,&#xD;
+to_char(b.end_time, 'yyyy-mm-dd hh24:mi') END_TIME, status &#xD;
+from V$RMAN_BACKUP_JOB_DETAILS b,V$BACKUP_SET s &#xD;
+where trunc(s.START_TIME)=trunc(b.START_TIME) &#xD;
+and s.incremental_level is not null &#xD;
+and b.input_type='DB INCR' &#xD;
+and b.start_time &gt; trunc(sysdate-2)</query>
+        <colnames>Backup Type, Backup Size,Startup Time,End Time,Status</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>FRA REPORT</title>
+        <query>SELECT name,round(space_limit/1024/1024/1024,2) "TOTAL",&#xD;
+round(space_used/1024/1024/1024,2) "USED",round(space_used/space_limit*100,2) "%Used",&#xD;
+number_of_files FROM V$RECOVERY_FILE_DEST&#xD;
+</query>
+        <colnames>FRA,Total(GB),Used(GB),%Used,Number of Files</colnames>
+ <query>SELECT * FROM V$RECOVERY_AREA_USAGE&#xD;
+</query>
+        <colnames>File Type,%Used,%Space reclaimable,Number of files</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+	 <report>
+        <title>Autotask Information</title>
+        <query>select c.client_name,c.window_name,c.window_start_time,h.job_duration,c.window_duration,h.job_status,h.job_error&#xD;
+from DBA_AUTOTASK_CLIENT_HISTORY c, dba_autotask_job_history h&#xD;
+where to_char(c.window_start_time,'dd-mon-yyyy hh24:mi')=to_char(h.job_start_time,'dd-mon-yyyy hh24:mi')&#xD;
+and c.client_name=h.client_name&#xD;
+and c.window_start_time&gt;sysdate-5&#xD;
+order by c.window_start_time</query>
+        <colnames>Task Name,Window,Start Time,Job Duration,Duration,Status,Error</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>Memory Components</title>
+        <query>SELECT  component,&#xD;
+        ROUND(current_size/1024/1204) AS current_size_mb,&#xD;
+        ROUND(min_size/1024/1204) AS min_size_mb,&#xD;
+        ROUND(max_size/1024/1204) AS max_size_mb&#xD;
+FROM    gv$memory_dynamic_components&#xD;
+WHERE   current_size != 0&#xD;
+ORDER BY component</query>
+        <colnames>Component,Current Size(MB),Min Size(MB),Max Size(MB)</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>Wait Report</title>
+        <query>select * from (select event,wait_class,round(sum(time_waited/1000/60)) from DBA_HIST_ACTIVE_SESS_HISTORY
+where sample_time&#62;sysdate-1
+group by event,wait_class
+order by sum(time_waited/60/60) desc) where rownum&#60;11</query>
+        <colnames>Event,Wait Class,Total Wait Time</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+	<report>
+        <title>Wait by Class</title>
+        <query>select * from (select wait_class,event,&#xD;
+to_char (to_date('1970-01-01 00','yyyy-mm-dd hh24') +sum(time_waited)/1000/60/60/24, 'HH24:MI:SS') total_wait,count(time_waited) total_waits,&#xD;
+count(p3text) timeout&#xD;
+from DBA_HIST_ACTIVE_SESS_HISTORY where sample_time&gt;sysdate-1 and wait_class is not null&#xD;
+group by wait_class, event&#xD;
+having round((sum(time_waited)/(1000))/60)&gt;0&#xD;
+order by 3 desc,1,2) where rownum&#60;11</query>
+        <colnames>Wait Class,Event,Total Wait time,Wait Count,Timeouts</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>Waits per Sessions</title>
+        <query>select * from (select H.session_id,U.USERNAME,H.sql_id,H.sql_plan_hash_value,H.event,H.wait_class,round(avg(TIME_WAITED)) from DBA_HIST_ACTIVE_SESS_HISTORY H,DBA_USERS U&#xD;
+where sample_time&gt;sysdate-1 and sql_id is not null and wait_class is not null and session_type&lt;&gt;'BACKGROUND'&#xD;
+AND U.USER_ID=H.USER_ID AND U.USERNAME NOT IN('SYS','SYSMAN','DBSMNP')&#xD;
+group by session_id,U.USERNAME,sql_id,sql_plan_hash_value,event,wait_class&#xD;
+order by round(avg(TIME_WAITED)) desc) where rownum&#60;11</query>
+        <colnames>SID,Username,SQL_ID,Plan_Hash_Value,Event,Wait Class,Time Waited</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+    <report>
+        <title>Waits by SQL</title>
+        <query>select * from(select SQL_ID, WAIT_CLASS,&#xD;
+decode(round(SUM(TM_DELTA_CPU_TIME/1000/60/60)),null,0,round(SUM(TM_DELTA_CPU_TIME/1000/60/60))) CPU_TIME,&#xD;
+decode(round(SUM(TIME_WAITED)),null,0,round(SUM(TIME_WAITED))) wait_time,&#xD;
+decode(round(SUM(DELTA_READ_IO_REQUESTS)),null,0,round(SUM(DELTA_READ_IO_REQUESTS))) reads,&#xD;
+decode(SUM(DELTA_WRITE_IO_REQUESTS),null,0,round(SUM(TM_DELTA_CPU_TIME/1000/60/60))) write,&#xD;
+decode(round(SUM(TEMP_SPACE_ALLOCATED)),null,0,round(SUM(TEMP_SPACE_ALLOCATED))) temp&#xD;
+from DBA_HIST_ACTIVE_SESS_HISTORY &#xD;
+where sample_time&gt;sysdate-1 and wait_class is not null  and sql_id is not null and TM_DELTA_CPU_TIME is not null&#xD;
+and session_type&lt;&gt;'BACKGROUND'&#xD;
+group by SQL_ID, WAIT_CLASS&#xD;
+order by 3 desc,4 desc,5 desc,6 desc,7 desc) where rownum&#60;11</query>
+        <colnames>SQL_ID,Wait Class,CPU Time,Total Wait Time,Total Read Req,Total Writes Req,Temp Utilization</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
+	 <report>
+        <title>Top 10 SQL</title>
+        <query> SELECT sql_id,
+       buffer_gets,
+       disk_reads,
+       executions,
+       hit_ratio,
+       substr(sql_text,0,100)
+       -- elapsed_time, cpu_time, user_io_wait_time, ,
+  FROM (SELECT sql_id,sql_text,
+               b.username,
+               a.disk_reads,
+               a.buffer_gets,
+               decode(a.executions,0,0,trunc(a.buffer_gets / a.executions)) buffer_get_per_exec,
+               a.parse_calls,
+               a.sorts,
+               a.executions,
+               a.rows_processed,
+               100 - ROUND (100 * decode(a.buffer_gets,0,0,a.disk_reads / a.buffer_gets), 2) hit_ratio,
+               module
+               -- cpu_time, elapsed_time, user_io_wait_time
+          FROM gv$sqlarea a, dba_users b
+         WHERE a.parsing_user_id = b.user_id
+           AND b.username NOT IN ('SYS', 'SYSTEM', 'RMAN','SYSMAN')
+           AND a.buffer_gets &#62; 10000
+         ORDER BY  a.executions,buffer_get_per_exec DESC)
+ WHERE ROWNUM &#60;= 10</query>
+        <colnames>sql_id,buffer_gets,disk_reads,executions,hit_ratio,sql_text</colnames>
+        <dayofweek>Everyday</dayofweek>
+		<dayofmonth>0</dayofmonth>
+		<runhour>anytime</runhour>
+    </report>
 </instance>
