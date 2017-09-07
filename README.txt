@@ -50,6 +50,10 @@ How to generate an encrypted password
 ----------------------
 -On dbreport.jar
 java -Dpasswd=<newPassword> -jar dbreport.jar
+If you are running in a Unix/Linux operational system and your password has the character $, you will find a different encrypted password,
+comparing with the WINDOWS version. This encrypted password won't work.
+$ is a special character on Unix systems.
+Put *single* quotes(') around the password on Unix in order to get the correct one.
 
 ----------------------
 XML configuration
